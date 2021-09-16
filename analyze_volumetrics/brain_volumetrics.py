@@ -18,11 +18,11 @@ class BrainVolumetrics():
                 patient_id, scan_id = patient_scan.split('_', 1)
                 search_path = os.path.join(rootdir, patient_id, scan_id,
                                            patient_id + '_' + scan_id + '*macruise_volumes.csv')
-                search_file = glob.glob(search_path)
-                if len(search_file) > 0:
+                search_file = glob.glob(search_path)[0]
+                if os.path.isfile(search_file):
                     filelist.append(search_file)
                 else:
-                    print('No file found in ' + search_file)
+                    print('No file found in ' + search_path)
 
         self.filelist = filelist
         self.brain_volumetric_df = None
