@@ -18,8 +18,7 @@ class BrainVolumetrics():
                 patient_id, scan_id = patient_scan.split('_', 1)
                 search_path = os.path.join(rootdir, patient_id, scan_id,
                                            patient_id + '_' + scan_id + '*macruise_volumes.csv')
-                print(search_path)
-                search_file = glob.glob(search_path)
+                search_file = glob.glob(search_path)[0]
                 print(search_file)
                 if os.path.isfile(search_file):
                     filelist.append(search_file)
