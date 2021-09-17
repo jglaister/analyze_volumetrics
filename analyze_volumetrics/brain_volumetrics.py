@@ -7,7 +7,6 @@ import pandas as pd
 import nibabel as nib
 
 import matplotlib.pyplot as plt
-import matplotlib
 
 class BrainVolumetrics():
     def __init__(self, rootdir, subjlist=None):

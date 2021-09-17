@@ -3,7 +3,7 @@
 """
 setup
 
-Setup for nipypeVBM package
+Setup for analyze_volumetrics package
 
 Author: Jeffrey Glaister
 """
@@ -13,15 +13,12 @@ from setuptools import setup, find_packages
 args = dict(
     name='analyze_volumetrics',
     version='0.1',
-    description='Runs fslvbm as a Nipype pipeline',
+    description='Compiles and analyzes MACRUISE output volumetrics',
     author='Jeffrey Glaister',
     author_email='jeff.glaister@gmail.com',
     url='https://github.com/jglaister/analyze_volumetrics'
 )
 
-setup(install_requires=['numpy', 'nibabel', 'pandas'],
+setup(install_requires=['numpy', 'nibabel', 'pandas', 'matplotlib'],
       packages=['analyze_volumetrics'],
       **args)
-
-#scripts=glob('bin/*'),
-
