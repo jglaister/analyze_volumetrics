@@ -103,19 +103,39 @@ class BrainVolumetrics():
                     print('No file found in ' + search_path)
                     break
 
+                search_path = os.path.join(self.rootdir, patient_id, scan_id,
+                                           patient_id + '_' + scan_id + '*MPRAGEPre_reg_macruise.nii.gz')
+                search_file = glob.glob(search_path)
+                if len(search_file) > 0:
+                    segmentation_file = search_file[0]
+                else:
+                    print('No file found in ' + search_path)
+                    break
+
                 brain_data = nib.load(brain_file).get_fdata()
                 mask_data = nib.load(mask_file).get_fdata()
+                segmentation_data = nib.load(segmentation_file).get_fdata()
                 center_slice = brain_data.shape[2]//2
-                fig, axs = plt.subplots()
 
+                fig, axs = plt.subplots()
                 axs.imshow(brain_data[:, :, center_slice].T, cmap='gray')
                 axs.axis('off')
                 axs.imshow(mask_data[:, :, center_slice].T, cmap='jet', alpha=0.5)
                 plt.gca().set_axis_off()
                 plt.margins(0, 0)
-
-                outfile_name = os.path.join(output_dir, patient_scan + '_overlay.png')
+                outfile_name = os.path.join(output_dir, patient_scan + '_mask_overlay.png')
                 fig.savefig(outfile_name, dpi=300, bbox_inches='tight', pad_inches=0)
+                plt.close(fig)
+
+                fig, axs = plt.subplots()
+                axs.imshow(brain_data[:, :, center_slice].T, cmap='gray')
+                axs.axis('off')
+                axs.imshow(segmentation_data[:, :, center_slice].T, cmap='jet', alpha=0.5)
+                plt.gca().set_axis_off()
+                plt.margins(0, 0)
+                outfile_name = os.path.join(output_dir, patient_scan + '_seg_overlay.png')
+                fig.savefig(outfile_name, dpi=300, bbox_inches='tight', pad_inches=0)
+                plt.close(fig)
 
 
     def write_volumetrics(self, output_dir, output_prefix):
