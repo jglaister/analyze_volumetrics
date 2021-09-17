@@ -6,12 +6,15 @@ import numpy as np
 import pandas as pd
 import nibabel as nib
 
+import matplotlib.pyplot as plt
+import matplotlib
 
 class BrainVolumetrics():
     def __init__(self, rootdir, subjlist=None):
         if subjlist is None:
             search_path = os.path.join(rootdir, '*','*','*_macruise_volumes.csv')
             filelist = sorted(glob.glob(search_path))
+            # TODO: Populate subjlist from this
         else:
             filelist = []
             for patient_scan in subjlist:
@@ -24,6 +27,8 @@ class BrainVolumetrics():
                 else:
                     print('No file found in ' + search_path)
 
+        self.rootdir = rootdir
+        self.subjlist = subjlist
         self.filelist = filelist
         self.brain_volumetric_df = None
 
@@ -75,6 +80,43 @@ class BrainVolumetrics():
         # Fill N/A with 0 - Is this correct?
         merged_df.fillna(0)
         self.brain_volumetric_df = merged_df
+
+    def write_images(self, output_dir):
+        if self.subjlist is not None:
+            for patient_scan in self.subjlist:
+                patient_id, scan_id = patient_scan.split('_', 1)
+                search_path = os.path.join(self.rootdir, patient_id, scan_id,
+                                           patient_id + '_' + scan_id + '*MPRAGEPre_reg.nii.gz')
+                search_file = glob.glob(search_path)
+                if len(search_file) > 0:
+                    brain_file = search_file[0]
+                else:
+                    print('No file found in ' + search_path)
+                    break
+
+                search_path = os.path.join(self.rootdir, patient_id, scan_id,
+                                           patient_id + '_' + scan_id + '*MPRAGEPre_reg_mask.nii.gz')
+                search_file = glob.glob(search_path)
+                if len(search_file) > 0:
+                    mask_file = search_file[0]
+                else:
+                    print('No file found in ' + search_path)
+                    break
+
+                brain_data = nib.load(brain_file).get_fdata()
+                mask_data = nib.load(mask_file).get_fdata()
+                center_slice = brain_data.shape[2]//2
+                fig, axs = plt.subplots()
+
+                axs.imshow(brain_data[:, :, center_slice].T, cmap='gray')
+                axs.axis('off')
+                axs.imshow(mask_data[:, :, center_slice].T, cmap='jet', alpha=0.5)
+                plt.gca().set_axis_off()
+                plt.margins(0, 0)
+
+                outfile_name = os.path.join(output_dir, patient_scan + '_overlay.png')
+                fig.savefig(outfile_name, dpi=300, bbox_inches='tight', pad_inches=0)
+
 
     def write_volumetrics(self, output_dir, output_prefix):
         if self.brain_volumetric_df is not None:
