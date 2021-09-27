@@ -82,11 +82,8 @@ class SpineVolumetrics():
                 norm_mtr = (avg_mtr-self.avg_GM_MTR)/(self.avg_WM_MTR-self.avg_GM_MTR)
             else:
                 norm_mtr = None
-            print({'Patient_id': scan_name, 'Avg_MTR': avg_mtr, 'Norm_MTR': norm_mtr})
-            df_mtr.append({'Patient_id': scan_name, 'Avg_MTR': avg_mtr, 'Norm_MTR': norm_mtr}, ignore_index=True)
-            print(df_mtr)
+            df_mtr = df_mtr.append({'Patient_id': scan_name, 'Avg_MTR': avg_mtr, 'Norm_MTR': norm_mtr}, ignore_index=True)
 
-        print(df_mtr)
         df_csa = pd.DataFrame(columns = ['Patient_id','Avg_CSA'])
         for f in self.filelist['CSA']:
             df_f = pd.read_csv(f, sep=',',header=0,index_col=1)
