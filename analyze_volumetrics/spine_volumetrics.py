@@ -82,7 +82,8 @@ class SpineVolumetrics():
                 norm_mtr = (avg_mtr-self.avg_GM_MTR)/(self.avg_WM_MTR-self.avg_GM_MTR)
             else:
                 norm_mtr = None
-            df_mtr.append({'Patient_id': scan_name, 'Avg_MTR': avg_mtr, 'Norm_MTR': norm_mtr}, ignore_index=False)
+            print({'Patient_id': scan_name, 'Avg_MTR': avg_mtr, 'Norm_MTR': norm_mtr})
+            df_mtr.append({'Patient_id': scan_name, 'Avg_MTR': avg_mtr, 'Norm_MTR': norm_mtr}, ignore_index=True)
             print(df_mtr)
 
         print(df_mtr)
