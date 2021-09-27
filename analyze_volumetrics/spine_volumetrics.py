@@ -74,18 +74,18 @@ class SpineVolumetrics():
             patient_id = filename.split('_')[0]
             scan_id = filename.split('_')[1]
             scan_name = patient_id + '_' + scan_id
-            avg_MTR = np.sum(df_f[3:-3,6] * df_f[3:-3,5]) / np.sum(df_f[3:-3,5])
+            avg_MTR = np.sum(df_f['WA()'] * df_f['Size [vox]']) / np.sum(df_f['Size [vox]'])
             norm_MTR = (avg_MTR-self.avg_GM_MTR)/(self.avg_WM_MTR-self.avg_GM_MTR)
             df_mtr.append({'Patient_id': scan_name, 'Avg_MTR': avg_MTR, 'Norm_MTR': norm_MTR}, ignore_index=True)
 
         df_csa = pd.DataFrame(columns = ['Patient_id','Avg_CSA'])
         for f in self.filelist['CSA']:
-            df_f = pd.read_csv(f, sep=',',header=0,index_col=1).to_numpy()
+            df_f = pd.read_csv(f, sep=',',header=0,index_col=1)
             filename = f.split('/')[-1]
             patient_id = filename.split('_')[0]
             scan_id = filename.split('_')[1]
             scan_name = patient_id + '_' + scan_id
-            avg_CSA = np.mean(df_f[3:-3,4])
+            avg_CSA = np.mean(df_f['MEAN(area)'])
             df_csa = df_csa.append({'Patient_id': scan_name, 'Avg_CSA': avg_CSA},ignore_index=True)
 
         self.spine_mtr_df = df_mtr
