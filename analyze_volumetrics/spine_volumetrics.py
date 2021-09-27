@@ -68,6 +68,7 @@ class SpineVolumetrics():
 
     def compute_volumetrics(self):
         df_mtr = pd.DataFrame(columns=['Patient_id','Avg_MTR', 'Norm_MTR'])
+
         for f in self.filelist['MTR']:
             df_f = pd.read_csv(f, sep=',', header=0, index_col=1)
             filename = f.split('/')[-1]
@@ -77,6 +78,8 @@ class SpineVolumetrics():
             avg_MTR = np.sum(df_f['WA()'] * df_f['Size [vox]']) / np.sum(df_f['Size [vox]'])
             norm_MTR = (avg_MTR-self.avg_GM_MTR)/(self.avg_WM_MTR-self.avg_GM_MTR)
             df_mtr.append({'Patient_id': scan_name, 'Avg_MTR': avg_MTR, 'Norm_MTR': norm_MTR}, ignore_index=True)
+            print(df_mtr)
+
         print(df_mtr)
         df_csa = pd.DataFrame(columns = ['Patient_id','Avg_CSA'])
         for f in self.filelist['CSA']:
