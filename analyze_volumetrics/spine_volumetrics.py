@@ -50,6 +50,8 @@ class SpineVolumetrics():
         self.rootdir = rootdir
         self.subjlist = subjlist
         self.filelist = filelist
+        self.avg_WM_MTR = None
+        self.avg_GM_MTR = None
         self.spine_csa_df = None
         self.spine_mtr_df = None
 
@@ -75,9 +77,12 @@ class SpineVolumetrics():
             patient_id = filename.split('_')[0]
             scan_id = filename.split('_')[1]
             scan_name = patient_id + '_' + scan_id
-            avg_MTR = np.sum(df_f['WA()'] * df_f['Size [vox]']) / np.sum(df_f['Size [vox]'])
-            norm_MTR = (avg_MTR-self.avg_GM_MTR)/(self.avg_WM_MTR-self.avg_GM_MTR)
-            df_mtr.append({'Patient_id': scan_name, 'Avg_MTR': avg_MTR, 'Norm_MTR': norm_MTR}, ignore_index=True)
+            avg_mtr = np.sum(df_f['WA()'] * df_f['Size [vox]']) / np.sum(df_f['Size [vox]'])
+            if self.avg_WM_MTR is not None and self.avg_GM_MTR is not None:
+                norm_mtr = (avg_mtr-self.avg_GM_MTR)/(self.avg_WM_MTR-self.avg_GM_MTR)
+            else:
+                norm_mtr = None
+            df_mtr.append({'Patient_id': scan_name, 'Avg_MTR': avg_mtr, 'Norm_MTR': norm_mtr}, ignore_index=False)
             print(df_mtr)
 
         print(df_mtr)
@@ -88,8 +93,8 @@ class SpineVolumetrics():
             patient_id = filename.split('_')[0]
             scan_id = filename.split('_')[1]
             scan_name = patient_id + '_' + scan_id
-            avg_CSA = np.mean(df_f['MEAN(area)'])
-            df_csa = df_csa.append({'Patient_id': scan_name, 'Avg_CSA': avg_CSA},ignore_index=True)
+            avg_csa = np.mean(df_f['MEAN(area)'])
+            df_csa = df_csa.append({'Patient_id': scan_name, 'Avg_CSA': avg_csa},ignore_index=True)
 
         self.spine_mtr_df = df_mtr
         self.spine_csa_df = df_csa
